@@ -50,23 +50,44 @@ services:
         networks:
             - messenger
 
-    postgresql:
-        image: postgres:16.4
-        environment:
-            POSTGRES_DB: ${DB_DATABASE}
-            POSTGRES_USER: ${DB_USERNAME}
-            POSTGRES_PASSWORD: ${DB_PASSWORD}
-            PGDATA: /data/postgres
-        healthcheck:
-            test: [ "CMD-SHELL", "pg_isready -d ${DB_DATABASE} -U ${DB_USERNAME}" ]
-            interval: 5s
-            timeout: 5s
-            retries: 5
-        restart: always
+    master:
+        container_name: "${COMPOSE_PROJECT_NAME:-citus}_master"
+        build:
+            context: ./.docker/citus
+            dockerfile: Dockerfile
+        ports: ["${COORDINATOR_EXTERNAL_PORT:-5432}:5432"]
+        labels: ["com.citusdata.role=Master"]
+        environment: &AUTH
+            POSTGRES_DB: "${DB_DATABASE}"
+            POSTGRES_USER: "${DB_USERNAME}"
+            POSTGRES_PASSWORD: "${DB_PASSWORD}"
+            PGUSER: "${DB_USERNAME}"
+            PGPASSWORD: "${DB_PASSWORD}"
+            POSTGRES_HOST_AUTH_METHOD: "${POSTGRES_HOST_AUTH_METHOD:-trust}"
+        networks:
+            - messenger
+
+    manager:
+        container_name: "${COMPOSE_PROJECT_NAME:-citus}_manager"
+        image: "citusdata/membership-manager:0.3.0"
         volumes:
-            - pg_vol:/data/postgres
-        ports:
-            - "${FORWARD_DB_PORT:-54321}:5432"
+            - "${DOCKER_SOCK:-/var/run/docker.sock}:/var/run/docker.sock"
+            - healthcheck-volume:/healthcheck
+        depends_on: [master]
+        environment: *AUTH
+        networks:
+            - messenger
+
+    worker:
+        build:
+            context: ./.docker/citus
+            dockerfile: Dockerfile
+        labels: ["com.citusdata.role=Worker"]
+        depends_on: [manager]
+        volumes:
+            - healthcheck-volume:/healthcheck
+        command: "/wait-for-manager.sh"
+        environment: *AUTH
         networks:
             - messenger
 
@@ -95,6 +116,8 @@ networks:
         driver: bridge
 
 volumes:
+    healthcheck-volume:
+        driver: "local"
     pg_vol:
         driver: "local"
     pg_vol-testing:

@@ -34,19 +34,18 @@ return [
         'local' => [
             'read' => [
                 'host' => [
-                    env('SLAVE_NAME_1', 'db2'),
-                    env('SLAVE_NAME_2', 'db3'),
+                    env('DB_HOST'),
                 ],
             ],
             'write' => [
                 'host' => [
-                    env('DB_MASTER_HOST', 'db1'),
+                    env('DB_HOST'),
                 ],
             ],
             'driver' => 'pgsql',
             'url' => env('DB_URL'),
             'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'social'),
+            'database' => env('DB_DATABASE', 'messenger'),
             'username' => env('DB_USERNAME', 'postgres'),
             'password' => env('DB_PASSWORD', 'secret'),
             'charset' => 'utf8',
