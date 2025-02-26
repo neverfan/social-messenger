@@ -1,0 +1,205 @@
+{
+	"info": {
+		"_postman_id": "5e7f2218-35f7-4b8b-90fb-a4d122d0126f",
+		"name": "Social [Otus HA] [Messenger Service]",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "117680"
+	},
+	"item": [
+		{
+			"name": "Dialog",
+			"item": [
+				{
+					"name": "Create [/api/dialog]",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHBpcmVzX2luIjoxNzMwNDEzMzkzfQ.M23jNp63D29UkKGH6YBRSdSFMxmnR45OveERXWULxuM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"users\": [2,3,4,5,6,7,8,9]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{messenger_base_url}}/api/dialog",
+							"host": [
+								"{{messenger_base_url}}"
+							],
+							"path": [
+								"api",
+								"dialog"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get [/api/dialog/:dialog]",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHBpcmVzX2luIjoxNzMwNDEzMzkzfQ.M23jNp63D29UkKGH6YBRSdSFMxmnR45OveERXWULxuM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{messenger_base_url}}/api/dialog/:dialog?page=1",
+							"host": [
+								"{{messenger_base_url}}"
+							],
+							"path": [
+								"api",
+								"dialog",
+								":dialog"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
+							],
+							"variable": [
+								{
+									"key": "dialog",
+									"value": "2",
+									"description": "ID диалога"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send [/api/dialog/:dialog/send]",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHBpcmVzX2luIjoxNzMwNDEzMzkzfQ.M23jNp63D29UkKGH6YBRSdSFMxmnR45OveERXWULxuM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"to_user_id\": null,\n    \"message\": \"Сообщение 1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{messenger_base_url}}/api/dialog/:dialog/send",
+							"host": [
+								"{{messenger_base_url}}"
+							],
+							"path": [
+								"api",
+								"dialog",
+								":dialog",
+								"send"
+							],
+							"variable": [
+								{
+									"key": "dialog",
+									"value": "2",
+									"description": "ID диалога"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get list [/api/dialog]",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHBpcmVzX2luIjoxNzMwNDEzMzkzfQ.M23jNp63D29UkKGH6YBRSdSFMxmnR45OveERXWULxuM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{messenger_base_url}}/api/dialog",
+							"host": [
+								"{{messenger_base_url}}"
+							],
+							"path": [
+								"api",
+								"dialog"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "inherit"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost",
+			"type": "string"
+		},
+		{
+			"key": "messenger_base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

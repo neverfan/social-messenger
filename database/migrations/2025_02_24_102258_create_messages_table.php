@@ -17,18 +17,23 @@ return new class extends Migration
             CREATE TABLE IF NOT EXISTS messages (
                id serial,
                dialog_id bigint NOT NULL,--id диалога
-               user_id bigint NOT NULL,--автор сообщения
+               from_user_id bigint NOT NULL,--автор сообщения
+               to_user_id bigint DEFAULT NULL, --для кого сообщение (не обязательно т.к. групповой диалог)
                text text NOT NULL,--текст сообщения
                created_at timestamp NOT NULL DEFAULT NOW(),--дата сообщения
-               --PRIMARY KEY (id, dialog_id),
+               updated_at timestamp NOT NULL DEFAULT NOW(),--дата изменения сообщения
+               PRIMARY KEY (dialog_id, id, created_at),
                CONSTRAINT fk_dialogs FOREIGN KEY (dialog_id) REFERENCES dialogs (id) ON DELETE CASCADE--внешний ключ
             ) PARTITION BY RANGE (created_at);
         ');
 
-        DB::unprepared("SELECT create_distributed_table('messages', 'dialog_id', 'hash', colocate_with := 'dialogs');");
+        DB::unprepared('
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_messages_unique ON messages (dialog_id, id, created_at);
+            ALTER TABLE messages REPLICA IDENTITY USING INDEX idx_messages_unique;
+        ');
+        DB::unprepared('CREATE INDEX IF NOT EXISTS idx_messages_dialog_id_created_at ON messages (dialog_id, created_at DESC);');
 
-        DB::unprepared('CREATE INDEX IF NOT EXISTS idx_messages_dialog_id ON messages (dialog_id);');
-        DB::unprepared('CREATE INDEX IF NOT EXISTS idx_messages_created_at ON messages (created_at);');
+        DB::unprepared("SELECT create_distributed_table('messages', 'dialog_id', 'hash', colocate_with := 'dialogs');");
     }
 
     /**

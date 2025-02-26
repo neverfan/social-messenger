@@ -25,7 +25,7 @@ return new class extends Migration
                 p_control := 'created_at',
                 p_interval := '1 hour',
                 p_type := 'range',
-                p_start_partition := to_char(NOW() - INTERVAL '24 hours', 'YYYY-MM-DD HH24:MI:SS') -- для старых записей
+                p_start_partition := to_char(NOW() - INTERVAL '6 hours', 'YYYY-MM-DD HH24:MI:SS') -- для старых записей
             );
 
             UPDATE partman.part_config SET retention_keep_table = false, retention = '1 month', infinite_time_partitions = true WHERE parent_table = 'public.messages';

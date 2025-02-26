@@ -55,7 +55,7 @@ services:
         build:
             context: ./.docker/citus
             dockerfile: Dockerfile
-        ports: ["${COORDINATOR_EXTERNAL_PORT:-5432}:5432"]
+        ports: ["${COORDINATOR_EXTERNAL_PORT:-64321}:5432"]
         labels: ["com.citusdata.role=Master"]
         environment: &AUTH
             POSTGRES_DB: "${DB_DATABASE}"
@@ -91,26 +91,6 @@ services:
         networks:
             - messenger
 
-    postgresql-testing:
-        image: postgres:16.4
-        environment:
-            POSTGRES_DB: ${TESTING_DB_DATABASE}
-            POSTGRES_USER: ${TESTING_DB_USERNAME}
-            POSTGRES_PASSWORD: ${TESTING_DB_PASSWORD}
-            PGDATA: /data/postgres
-        healthcheck:
-            test: [ "CMD-SHELL", "pg_isready -d ${TESTING_DB_DATABASE} -U ${TESTING_DB_USERNAME}" ]
-            interval: 5s
-            timeout: 5s
-            retries: 5
-        restart: always
-        volumes:
-            - pg_vol-testing:/data/postgres
-        ports:
-            - "${TESTING_FORWARD_DB_PORT:-54322}:5432"
-        networks:
-            - messenger
-
 networks:
     messenger:
         driver: bridge
@@ -119,6 +99,4 @@ volumes:
     healthcheck-volume:
         driver: "local"
     pg_vol:
-        driver: "local"
-    pg_vol-testing:
         driver: "local"
